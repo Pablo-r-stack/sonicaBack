@@ -1,18 +1,20 @@
 import express from 'express';
 import { eventoControlador } from '../controllers/eventoControlador.js';
 
-const router = express.Router();
+const publicRouter = express.Router();
+const protectedRouter = express.Router();
 
 //defino rutas
 
-router.get('/', eventoControlador.obtenerEventos);
-router.post('/', eventoControlador.crearEvento);
+publicRouter.get('/lista', eventoControlador.obtenerEventos);
+protectedRouter.post('/', eventoControlador.crearEvento);
 
-router.route('/:id')
-
+protectedRouter.route('/:id')
     .get(eventoControlador.buscarEventoId)
     .put(eventoControlador.modificarEvento)
     .delete(eventoControlador.eliminarEvento)
 
-
-export default router;
+export default {
+    public: publicRouter,
+    protected: protectedRouter
+};
