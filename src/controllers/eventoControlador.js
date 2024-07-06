@@ -44,6 +44,22 @@ const buscarEventoId = (async(req, res) => {
     }
 });
 
+const buscarEventosOrganizador = (async(req, res) => {
+    const { id } = req.session.user;
+    console.log('Obteniendo datos del usuario id ' + id);
+    try {
+        const evento = await eventoServicio.listaEventosOrganizador([id]);
+        if(! evento.length > 0){
+            res.status(404).json({message: 'No se encontro el evento deseado'});
+        }else{
+            res.status(200).json(evento);
+        }
+    } catch (error) {
+        console.error('Error al ejecutar consulta SQL', error);
+        res.status(500);
+    }
+});
+
 const modificarEvento = (async(req, res) => {
     const { id } = req.params;
     const {titulo, fecha, lugar, hora, imagen, descripcion, direccion, coordenadas, numEntradas, idOrganizador} = req.body;
@@ -77,6 +93,6 @@ const eliminarEvento = (async(req, res) => {
 });
 
 export const eventoControlador = {
-    obtenerEventos, crearEvento, modificarEvento, buscarEventoId, eliminarEvento
+    obtenerEventos, crearEvento, modificarEvento, buscarEventoId, eliminarEvento, buscarEventosOrganizador
 };
 

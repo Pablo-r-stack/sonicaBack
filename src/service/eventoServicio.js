@@ -13,6 +13,17 @@ const listarEventos = (async () => {
     return await ejecutarConsulta(consulta);
 });
 
+const listaEventosOrganizador = (async (parametros) => {
+    // const consulta = 'SELECT * FROM evento';
+    const consulta = `
+    SELECT *,
+            DATE_FORMAT(fecha, '%Y-%m-%d') AS fecha,
+            DATE_FORMAT(hora, '%H:%i') AS hora
+        FROM evento WHERE idOrganizador = ?
+`;
+    return await ejecutarConsulta(consulta, parametros);
+});
+
 const crearEvento = (async (parametros) => {
     // INSERT INTO `sonica`.`evento` (`titulo`, `fecha`, `lugar`, `hora`, `imagen`, `descripcion`, `direccion`, `coordenadas`, `numEntradas`, `idOrganizador`) VALUES ('La Konga', '2024-09-23', 'Mendoza', '23:00', 'https://pablo-r-stack.github.io/sonica/img/foto/konga.jpg', 'Septiembre será un mes para recordar: la agrupación de cuarteto más convocante de Argentina hará temblar Mendoza al ritmo de todos los clásicos de sus dos décadas de éxitos.', 'Estadio Malvinas argentinas', 'https://www.google.com/maps?ll=-32.889664,-68.880096&z=15&t=m&hl=es-419&gl=AR&mapclient=embed&cid=7514978007226677027', '200', '12');
     const consulta = 'INSERT INTO evento (titulo, fecha, lugar, hora, imagen, descripcion, direccion, coordenadas, numEntradas, idOrganizador) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
@@ -39,5 +50,5 @@ const eliminarEvento = (async (parametros) => {
 
 
 export const eventoServicio = {
-    listarEventos, crearEvento, modificarEvento, eliminarEvento, buscarEventoId
+    listarEventos, crearEvento, modificarEvento, eliminarEvento, buscarEventoId, listaEventosOrganizador
 }

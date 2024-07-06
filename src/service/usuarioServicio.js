@@ -17,7 +17,7 @@ const registrarUsuario = (async (body) => {
         if (rol == null) rol = 'Cliente';
         const usuario = await buscarUsuarioporEmail([email]);
         
-        if (usuario) throw new Error('El email ingresado ya se encuentra registrado, intenta otra vez');
+        if (usuario.length > 0) throw new Error('El email ingresado ya se encuentra registrado, intenta otra vez');
         
         const hashedPassword = await bcrypt.hash(password, 10);
         const parametros = [nombre, apellido, email, hashedPassword, pais, dni, rol];
@@ -38,7 +38,20 @@ const buscarUsuarioporEmail = (async (parametros) => {
 })
 
 const modificarUsuario = (async (parametros) => {
-    const consulta = 'UPDATE usuario SET nombre = ?, apellido = ?, email = ?, pais = ?, dni = ?, tipo = ? WHERE id = ?';
+    const consulta = 'UPDATE usuario SET nombre = ?, apellido = ?, email = ?, pais = ?, dni = ?, rol = ? WHERE id = ?';
+    return await ejecutarConsulta(consulta, parametros);
+})
+
+async function modificarRol(rol, id) {
+    const consulta = 'UPDATE usuario SET rol = ? WHERE id = ?';
+    const parametros = [rol, id];
+    return await ejecutarConsulta(consulta, parametros);
+}
+
+const cambiarPass = (async (password, id)=>{
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const parametros = [hashedPassword, id];
+    const consulta = 'UPDATE usuario SET password = ? WHERE id = ?'
     return await ejecutarConsulta(consulta, parametros);
 })
 
@@ -58,7 +71,8 @@ const login = (async (body) => {
         const usuarioPublic = {
             id: usuario[0].id,
             nombre: usuario[0].nombre,
-            email: usuario[0].email
+            email: usuario[0].email,
+            rol: usuario[0].rol
         };
 
         return usuarioPublic
@@ -69,5 +83,5 @@ const login = (async (body) => {
 })
 
 export const usuarioServicio = {
-    listarUsuarios, registrarUsuario, buscarUsuarioporId, modificarUsuario, borrarUsuario, login
+    listarUsuarios, registrarUsuario, buscarUsuarioporId, modificarUsuario, borrarUsuario, login, cambiarPass, modificarRol
 }

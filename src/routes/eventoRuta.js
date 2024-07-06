@@ -8,6 +8,7 @@ const protectedRouter = express.Router();
 
 publicRouter.get('/lista', eventoControlador.obtenerEventos);
 protectedRouter.post('/', eventoControlador.crearEvento);
+protectedRouter.get('/eventosOrganizador', eventoControlador.buscarEventosOrganizador)
 
 protectedRouter.route('/:id')
     .get(eventoControlador.buscarEventoId)

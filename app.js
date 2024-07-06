@@ -24,20 +24,39 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 const authMiddleware = (req, res, next) => {
-    const token = req.cookies.access_token;
+    const token = req.headers['authorization']?.split(' ')[1]; // Usar el token del encabezado
+
     req.session = { user: null };
 
-    if(!token){res.status(403).json({message: 'Prohibido'})};
+    if (!token) {
+        return res.status(403).json({ message: 'Prohibido' });
+    }
 
-        try {
-            const data = jwt.verify(token, 'SECRET_KEY');
-            req.session.user = data;
-        } catch (error) {
-            console.error('Token verification failed:', error);
-        }
-
-    next();
+    try {
+        const data = jwt.verify(token, 'SECRET_KEY');
+        req.session.user = data;
+        next(); // Solo llama a next() si la verificación del token es exitosa
+    } catch (error) {
+        console.error('Token verification failed:', error);
+        return res.status(401).json({ message: 'Token inválido' }); // Envía una respuesta de error si la verificación falla
+    }
 };
+
+// const authMiddleware = (req, res, next) => {
+//     const token = req.body.access_token;
+//     req.session = { user: null };
+
+//     if(!token){res.status(403).json({message: 'Prohibido'})};
+
+//         try {
+//             const data = jwt.verify(token, 'SECRET_KEY');
+//             req.session.user = data;
+//         } catch (error) {
+//             console.error('Token verification failed:', error);
+//         }
+
+//     next();
+// };
 
 // app.use((req, res, next)=>{
 //     const token = req.cookies.access_token;
@@ -53,7 +72,7 @@ const authMiddleware = (req, res, next) => {
 // })
 
 //index por defecto
-app.get('/', (req, res) => res.send('index.html'));
+app.get('/', (req, res) => res.send('index'));
 
 //rutas
 
