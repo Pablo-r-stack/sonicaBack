@@ -1,6 +1,7 @@
 import express from "express";
 import usuarioRouter from "./src/routes/usuarioRuta.js";
 import eventoRouter from "./src/routes/eventoRuta.js";
+import entradaRouter from "./src/routes/entradaRuta.js"
 import cors from 'cors';
 import jwt from 'jsonwebtoken'
 import cookieParser from "cookie-parser";
@@ -78,8 +79,10 @@ app.get('/', (req, res) => res.send('index'));
 
 app.use('/usuario', usuarioRouter.public);
 app.use('/evento', eventoRouter.public);
+app.use('/entrada', entradaRouter.public);
 
 
 app.use('/usuarios', authMiddleware, usuarioRouter.protected);
 app.use('/eventos', authMiddleware, eventoRouter.protected);
+app.use('/entradas', authMiddleware, entradaRouter.protected);
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

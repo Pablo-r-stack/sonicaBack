@@ -1,3 +1,4 @@
+import { entradaServicio } from "../service/entradaServicio.js";
 import { eventoServicio } from "../service/eventoServicio.js";
 
 // function obtenerEventos() {
@@ -19,9 +20,15 @@ const obtenerEventos = (async (req, res) => {
 
 const crearEvento = (async(req, res) => {
     try {
-        const {titulo, fecha, lugar, hora, imagen, descripcion, direccion, coordenadas, numEntradas, idOrganizador} = req.body;
-        const parametros = [titulo, fecha, lugar, hora, imagen, descripcion, direccion, coordenadas, numEntradas, idOrganizador];
+        const {titulo, fecha, lugar, hora, imagen, descripcion, direccion, coordenadas, numEntradas, precioEntrada} = req.body;
+        const idOrganizador  = req.session.user.id;
+        const parametros = [titulo, fecha, lugar, hora, imagen, descripcion, direccion, coordenadas, idOrganizador];
         const evento = await eventoServicio.crearEvento(parametros);
+        const entradas = [precioEntrada, numEntradas, numEntradas, 0, evento.insertId];
+        if(evento){
+            const entradaEvento = await entradaServicio.crearEntradaEvento(entradas);
+        }
+
         res.status(201).json({message: 'Evento creado con exito '  + evento.insertId});
     } catch (error) {
         console.error('Error al ejecutar consulta SQL', error);
@@ -40,7 +47,7 @@ const buscarEventoId = (async(req, res) => {
         }
     } catch (error) {
         console.error('Error al ejecutar consulta SQL', error);
-        res.sendStatus(500);
+        res.status(500);
     }
 });
 
@@ -62,8 +69,9 @@ const buscarEventosOrganizador = (async(req, res) => {
 
 const modificarEvento = (async(req, res) => {
     const { id } = req.params;
-    const {titulo, fecha, lugar, hora, imagen, descripcion, direccion, coordenadas, numEntradas, idOrganizador} = req.body;
-        const parametros = [titulo, fecha, lugar, hora, imagen, descripcion, direccion, coordenadas, numEntradas, idOrganizador, id];
+    const {titulo, fecha, lugar, hora, imagen, descripcion, direccion, coordenadas} = req.body;
+    const idOrganizador  = req.session.user.id;
+        const parametros = [titulo, fecha, lugar, hora, imagen, descripcion, direccion, coordenadas, idOrganizador, id];
     try {
         const resultado = await eventoServicio.modificarEvento(parametros);
         if(!resultado.affectedRows === 0){
@@ -73,7 +81,7 @@ const modificarEvento = (async(req, res) => {
         }
     } catch (error) {
         console.error('Error al ejecutar consulta SQL', error);
-        res.sendStatus(500);
+        res.status(500);
     }
 });
 
