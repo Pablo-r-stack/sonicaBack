@@ -61,6 +61,7 @@ Si te gusto o queres saber mas de nosotros podes encontrar nuestros perfiles y r
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 
 ## Instalación
+
 Para su ejecucion local, es necesario clonar el repositorio, previo a su ejecucion, asegurarse de crear una base de datos relacional ejecutando el script que se aloja en la carpeta Utils (crea tablas necesarias para la ejecucion del proyecto). Tambien es importante instalar dependencias mediante <code>'npm install'</code> 
 
 Crear .env con variables de entorno sugeridas para la ejecucion del proyecto.
