@@ -19,7 +19,7 @@ app.use(cookieParser());
 
 //Setup de cors para permitir conexion del frontend
 const corsOptions = {
-    origin: 'http://127.0.0.1:5501', // Reemplaza con el dominio permitido
+    origin: process.env.CORS_ORIGIN,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
