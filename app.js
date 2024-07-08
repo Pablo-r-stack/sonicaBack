@@ -88,4 +88,5 @@ app.use('/entrada', entradaRouter.public);
 app.use('/usuarios', verificarSesion, usuarioRouter.protected);
 app.use('/eventos', verificarSesion, eventoRouter.protected);
 app.use('/entradas', verificarSesion, entradaRouter.protected);
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

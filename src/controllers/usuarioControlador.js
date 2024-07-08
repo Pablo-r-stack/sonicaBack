@@ -1,8 +1,10 @@
+
 import { usuarioServicio } from "../service/usuarioServicio.js";
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
 
 dotenv.config();
+
 //operaciones logicas del CRUD USUARIO
 
 //funcion clasica
@@ -154,7 +156,10 @@ const login = async (req, res) => {
 
 
 
+
 export const usuarioControlador = {
+
     obtenerUsuarios, registrarUsuario, buscarUsuarioId,
     modificarUsuario, borrarUsuario, login, cambiarPass, modificarRol
 };
+
