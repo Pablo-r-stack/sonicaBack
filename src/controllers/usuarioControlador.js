@@ -1,5 +1,8 @@
 import { usuarioServicio } from "../service/usuarioServicio.js";
 import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
+
+dotenv.config();
 //operaciones logicas del CRUD USUARIO
 
 //funcion clasica
@@ -127,7 +130,7 @@ const login = async (req, res) => {
         if (!usuario) {
             res.status(404).json({ message: "Usuario o contraseña inválidos" });
         } else {
-            const token = jwt.sign({ id: usuario.id, nombre: usuario.nombre, email: usuario.email }, "SECRET_KEY",
+            const token = jwt.sign({ id: usuario.id, nombre: usuario.nombre, email: usuario.email, rol: usuario.rol }, process.env.JWT_SECRET,
                 {
                     expiresIn: '1h'
                 });

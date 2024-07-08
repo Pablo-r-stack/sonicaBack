@@ -5,16 +5,19 @@ import entradaRouter from "./src/routes/entradaRuta.js"
 import cors from 'cors';
 import jwt from 'jsonwebtoken'
 import cookieParser from "cookie-parser";
+import { verificarSesion } from "./src/middlewares/auth.js";
+import dotenv from 'dotenv';
 
 //inicializamos el servidor de express.
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(cookieParser());
 
+//Setup de cors para permitir conexion del frontend
 const corsOptions = {
     origin: 'http://127.0.0.1:5501', // Reemplaza con el dominio permitido
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -24,24 +27,24 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const authMiddleware = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1]; // Usar el token del encabezado
+// const authMiddleware = (req, res, next) => {
+//     const token = req.headers['authorization']?.split(' ')[1]; // Usar el token del encabezado
 
-    req.session = { user: null };
+//     req.session = { user: null };
 
-    if (!token) {
-        return res.status(403).json({ message: 'Prohibido' });
-    }
+//     if (!token) {
+//         return res.status(403).json({ message: 'Prohibido' });
+//     }
 
-    try {
-        const data = jwt.verify(token, 'SECRET_KEY');
-        req.session.user = data;
-        next(); // Solo llama a next() si la verificación del token es exitosa
-    } catch (error) {
-        console.error('Token verification failed:', error);
-        return res.status(401).json({ message: 'Token inválido' }); // Envía una respuesta de error si la verificación falla
-    }
-};
+//     try {
+//         const data = jwt.verify(token, 'SECRET_KEY');
+//         req.session.user = data;
+//         next(); // Solo llama a next() si la verificación del token es exitosa
+//     } catch (error) {
+//         console.error('Token verification failed:', error);
+//         return res.status(401).json({ message: 'Token inválido' }); // Envía una respuesta de error si la verificación falla
+//     }
+// };
 
 // const authMiddleware = (req, res, next) => {
 //     const token = req.body.access_token;
@@ -82,7 +85,7 @@ app.use('/evento', eventoRouter.public);
 app.use('/entrada', entradaRouter.public);
 
 
-app.use('/usuarios', authMiddleware, usuarioRouter.protected);
-app.use('/eventos', authMiddleware, eventoRouter.protected);
-app.use('/entradas', authMiddleware, entradaRouter.protected);
+app.use('/usuarios', verificarSesion, usuarioRouter.protected);
+app.use('/eventos', verificarSesion, eventoRouter.protected);
+app.use('/entradas', verificarSesion, entradaRouter.protected);
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
